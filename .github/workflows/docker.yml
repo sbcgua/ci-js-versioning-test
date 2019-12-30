@@ -1,0 +1,25 @@
+name: Tag new version
+
+on:
+  push:
+    tags:
+      - *
+
+jobs:
+  add-tag:
+    name: Create docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: abaplint/abaplint-docker
+      - name: Build container
+        run: |
+          docker --version
+          pwd
+          ls -AFl
+          #docker build . --file Dockerfile --tag abaplint/abaplint:latest
+      - name: Push container
+        run: |
+          ls -AFl
+          docker images
