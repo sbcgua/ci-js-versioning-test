@@ -43,7 +43,7 @@ jobs:
           last_tag=${last_tag#v}
           echo Last tag: "_${last_tag}_"
           echo New tag: "_${new_tag}_"
-          [ last_tag = new_tag ] && echo "Version change was not detected, exiting..." && exit 0
+          [ "_${last_tag}_" = "_${new_tag}_" ] && echo "Version change was not detected, exiting..." && exit 0
           echo "Version change detected"
 
 
