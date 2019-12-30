@@ -31,14 +31,18 @@ jobs:
       - name: Test env
         if: github.ref == 'refs/heads/master' && github.repository == 'sbcgua/ci-js-versioning-test'
         run: |
-          echo Hello
-          pwd
-          ls -AFl
+          echo $GITHUB_WORKFLOW
+          echo $GITHUB_ACTOR
+          echo $GITHUB_REPOSITORY
+          echo $GITHUB_WORKSPACE
+          echo $GITHUB_SHA
           git --version
+          jq --version
           last_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           new_tag=$(jq -r -c .version package.json)
           echo Last tag: ${last_tag#v}
           echo New tag: ${new_tag}
-          printenv
+          [ last_tag = new_tag ] && echo "Version change was not detected, exiting..." && exit 0
+          echo "Version change detected"
 
 
