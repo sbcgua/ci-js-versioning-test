@@ -3,7 +3,7 @@ name: Tag new version
 on:
   push:
     tags:
-      - *
+      - '*'
 
 jobs:
   add-tag:
