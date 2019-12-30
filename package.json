@@ -1,7 +1,7 @@
 {
   "name": "auto-version-test",
   "version": "1.0.2",
-  "description": "versioning test",
+  "description": "js versioning test",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Test successful\" && exit 0",
