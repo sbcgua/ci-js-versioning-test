@@ -8,26 +8,37 @@ on:
       - 'package.json'
 
 jobs:
-  test:
-    name: Test code
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1    
-    - uses: actions/setup-node@v1
-    - run: |
-        npm install
-        npm test
+  # test:
+  #   name: Test code
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #     with:
+  #       fetch-depth: 1    
+  #   - uses: actions/setup-node@v1
+  #   - run: |
+  #       npm install
+  #       npm test
 
   add-tag:
     name: Add a tag on new version
     runs-on: ubuntu-latest
     # needs: test
     steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1    
       - name: Test env
+        if: github.ref == 'refs/heads/master' && github.repository == 'sbcgua/ci-js-versioning-test'
         run: |
           echo Hello
           pwd
-          ls
+          ls -AFl
           git --version
+          last_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          new_tag=$(jq -r -c .version package.json)
+          echo Last tag: ${last_tag#v}
+          echo New tag: ${new_tag}
+          printenv
+
+
