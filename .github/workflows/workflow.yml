@@ -29,3 +29,4 @@ jobs:
         echo Hello
         pwd
         ls
+        git --version
