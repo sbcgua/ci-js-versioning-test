@@ -37,15 +37,15 @@ jobs:
           jq --version
           LAST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           LAST_TAG=${LAST_TAG#v}
-          NEW_TAG=$(jq -r -c .version package.json)
-          echo "Last tag: ${LAST_TAG}, New tag: ${NEW_TAG}"
-          [ "${LAST_TAG}" = "${NEW_TAG}" ] && echo "Version change was not detected, exiting..." && exit 0
+          CUR_VERSION=$(jq -r -c .version package.json)
+          echo "Last tag: ${LAST_TAG}, Current version: ${CUR_VERSION}"
+          [ "${LAST_TAG}" = "${CUR_VERSION}" ] && echo "Version change was not detected, exiting..." && exit 0
           echo "Version change detected"
           [ -n "${GITHUB_TOKEN}" ] || echo "GITHUB_TOKEN is undefined"
           [ -n "${GITHUB_TOKEN}" ] || exit 1
           AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
           API_ENDPOINT="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
-          API_REQUEST="{ \"ref\": \"refs/tags/$NEW_TAG\", \"sha\": \"$GITHUB_SHA\" }"
-          echo $API_ENDPOINT
-          echo $API_REQUEST
-          curl -s -X POST $API_ENDPOINT -H $AUTH_HEADER -d "$API_REQUEST"
+          API_REQUEST="{ \"ref\": \"refs/tags/v$CUR_VERSION\", \"sha\": \"$GITHUB_SHA\" }"
+          echo "api endpoint: $API_ENDPOINT"
+          echo "api request:  $API_REQUEST"
+          curl -s -X POST $API_ENDPOINT -H "$AUTH_HEADER" -d "$API_REQUEST"
