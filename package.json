@@ -4,7 +4,7 @@
   "description": "js versioning test",
   "main": "index.js",
   "scripts": {
-    "test":    "echo \"Test successful\" && exit 0",
+    "test":     "echo \"Test successful\" && exit 0",
     "testfail": "echo \"Test failed\" && exit 1"
   },
   "repository": {
