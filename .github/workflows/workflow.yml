@@ -31,7 +31,7 @@ jobs:
       - name: Test env
         if: github.ref == 'refs/heads/master' && github.repository == 'sbcgua/ci-js-versioning-test'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
         run: |
           echo $GITHUB_WORKFLOW
           echo $GITHUB_ACTOR
@@ -51,4 +51,4 @@ jobs:
           API_ENDPOINT="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
           API_REQUEST=$(jq -n "{ ref: refs/tags/$NEW_TAG sha: $GITHUB_SHA }")
           echo $API_REQUEST
-          # curl -s -X POST $API_ENDPOINT -H $AUTH_HEADER -d "$API_REQUEST"
+          curl -s -X POST $API_ENDPOINT -H $AUTH_HEADER -d "$API_REQUEST"
