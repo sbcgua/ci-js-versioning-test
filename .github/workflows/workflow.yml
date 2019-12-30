@@ -1,0 +1,31 @@
+name: Tag new version
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'package.json'
+
+jobs:
+  test:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1    
+    - uses: actions/setup-node@v1
+    - run: |
+        npm install
+        npm test
+
+  add-tag:
+    name: Add a tag on new version
+    runs-on: ubuntu-latest
+    # needs: test
+    steps:
+      - run: |
+        echo Hello
+        pwd
+        ls
