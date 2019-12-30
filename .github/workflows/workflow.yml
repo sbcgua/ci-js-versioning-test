@@ -33,23 +33,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
         run: |
-          echo $GITHUB_WORKFLOW
-          echo $GITHUB_ACTOR
-          echo $GITHUB_REPOSITORY
-          echo $GITHUB_WORKSPACE
-          echo $GITHUB_SHA
           git --version
           jq --version
           LAST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          NEW_TAG=$(jq -r -c .version package.json)
           LAST_TAG=${LAST_TAG#v}
-          echo Last tag: "${LAST_TAG}"
-          echo New tag: "${NEW_TAG}"
+          NEW_TAG=$(jq -r -c .version package.json)
+          echo "Last tag: ${LAST_TAG}, New tag: ${NEW_TAG}"
           [ "${LAST_TAG}" = "${NEW_TAG}" ] && echo "Version change was not detected, exiting..." && exit 0
           echo "Version change detected"
           AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
           API_ENDPOINT="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
-          API_REQUEST="{ 'ref': 'refs/tags/$NEW_TAG' 'sha': '$GITHUB_SHA' }"
+          API_REQUEST="{ \"ref\": \"refs/tags/$NEW_TAG\", \"sha\": \"$GITHUB_SHA\" }"
           echo $API_ENDPOINT
           echo $API_REQUEST
           curl -s -X POST $API_ENDPOINT -H $AUTH_HEADER -d "$API_REQUEST"
