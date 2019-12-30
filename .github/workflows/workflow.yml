@@ -41,8 +41,8 @@ jobs:
           last_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           new_tag=$(jq -r -c .version package.json)
           last_tag=${last_tag#v}
-          echo Last tag: ${last_tag}
-          echo New tag: ${new_tag}
+          echo Last tag: "_${last_tag}_"
+          echo New tag: "_${new_tag}_"
           [ last_tag = new_tag ] && echo "Version change was not detected, exiting..." && exit 0
           echo "Version change detected"
 
