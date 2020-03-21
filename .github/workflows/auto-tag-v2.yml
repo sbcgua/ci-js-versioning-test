@@ -12,10 +12,8 @@ jobs:
     name: Add a tag on new version
     # needs: test
     runs-on: ubuntu-latest
-    env:
-      # ORIGINAL REPO, to avoid running for forks
-      ORIGIN_REPO_NAME: sbcgua/ci-js-versioning-test
-    if: github.ref == 'refs/heads/master' && github.repository == env.ORIGIN_REPO_NAME
+    # ORIGINAL REPO, to avoid running for forks
+    if: github.ref == 'refs/heads/master' && github.repository == 'sbcgua/ci-js-versioning-test'
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
