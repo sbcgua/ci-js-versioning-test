@@ -13,8 +13,9 @@ jobs:
     # needs: test
     runs-on: ubuntu-latest
     env:
+      # ORIGINAL REPO, to avoid running for forks
       ORIGIN_REPO_NAME: sbcgua/ci-js-versioning-test
-    if: github.ref == 'refs/heads/master' && github.repository == ${{ env.ORIGIN_REPO_NAME }}
+    if: github.ref == 'refs/heads/master' && github.repository == env.ORIGIN_REPO_NAME
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
