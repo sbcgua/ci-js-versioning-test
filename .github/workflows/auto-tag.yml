@@ -48,4 +48,4 @@ jobs:
           API_REQUEST="{ \"ref\": \"refs/tags/v$CUR_VERSION\", \"sha\": \"$GITHUB_SHA\" }"
           echo "api endpoint: $API_ENDPOINT"
           echo "api request:  $API_REQUEST"
-          curl -s -X POST $API_ENDPOINT -H "$AUTH_HEADER" -d "$API_REQUEST"
+          # curl -s -X POST $API_ENDPOINT -H "$AUTH_HEADER" -d "$API_REQUEST"

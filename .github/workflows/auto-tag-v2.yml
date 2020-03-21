@@ -1,0 +1,49 @@
+name: Tag new version
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'package.json'
+
+jobs:
+  auto-tag:
+    name: Add a tag on new version
+    # needs: test
+    runs-on: ubuntu-latest
+    env:
+      ORIGIN_REPO_NAME: sbcgua/ci-js-versioning-test
+    if: github.ref == 'refs/heads/master' && github.repository == ${{ env.ORIGIN_REPO_NAME }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Detect version change
+        id: detect_version_change
+        run: |
+          LAST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          LAST_TAG=${LAST_TAG#v}
+          CURRENT_VERSION=$(jq -r -c .version package.json)
+          echo "Last tag: ${LAST_TAG}, Current version: ${CURRENT_VERSION}"
+          if [ "${LAST_TAG}" = "${CURRENT_VERSION}" ]; then
+            echo "Version change was not detected, exiting..."
+          else
+            echo "Version change detected"
+            echo "::set-output name=VERSION_CHANGED::yes"
+            echo "::set-output name=NEW_VERSION::$CURRENT_VERSION"
+          fi
+      - name: Create new tag
+        if: success() && steps.detect_version_change.outputs.VERSION_CHANGED == 'yes'
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
+        run: |
+          if [ -z "${GITHUB_TOKEN}" ]; then
+            echo "GITHUB_TOKEN is undefined"
+            exit 1
+          fi
+          AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
+          API_ENDPOINT="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
+          API_REQUEST="{ \"ref\": \"refs/tags/v${{ steps.detect_version_change.outputs.NEW_VERSION }}\", \"sha\": \"${GITHUB_SHA}\" }"
+          echo "api endpoint: $API_ENDPOINT"
+          echo "api request:  $API_REQUEST"
+          curl -s -X POST "$API_ENDPOINT" -H "$AUTH_HEADER" -d "$API_REQUEST"
