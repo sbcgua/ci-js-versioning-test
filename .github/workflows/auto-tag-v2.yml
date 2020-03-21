@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'package.json'
+    # paths:
+    #   - 'package.json'
 
 jobs:
   auto-tag:
@@ -43,6 +43,9 @@ jobs:
           AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
           API_ENDPOINT="https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs"
           API_REQUEST="{ \"ref\": \"refs/tags/v${{ steps.detect_version_change.outputs.NEW_VERSION }}\", \"sha\": \"${GITHUB_SHA}\" }"
-          echo "api endpoint: $API_ENDPOINT"
-          echo "api request:  $API_REQUEST"
-          curl -s -X POST "$API_ENDPOINT" -H "$AUTH_HEADER" -d "$API_REQUEST" -w "%{http_code}" -f
+          echo "Api endpoint: ${API_ENDPOINT}"
+          echo "Api request:  ${API_REQUEST}"
+          HTTP_CODE=$(curl -s -X POST "$API_ENDPOINT" -H "$AUTH_HEADER" -d "$API_REQUEST" -w "%{http_code}\n" -o /tmp/response.json)
+          echo "Http code:    ${HTTP_CODE}"
+          cat /tmp/response.json
+          [ $HTTP_CODE == 2* ]
