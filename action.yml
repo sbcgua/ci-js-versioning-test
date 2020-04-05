@@ -3,4 +3,4 @@ name: 'Abaplint'
 description: 'Lint abap code repository'
 runs:
   using: 'docker'
-  image: 'docker://abaplint/abablint'
+  image: 'docker://abaplint/abaplint'
